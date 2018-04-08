@@ -7,14 +7,15 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='chat.css')}}">
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type ="text/javascript">
-        $(document). ready(function (){
+        $(document).ready(function (){
             // this triggers the connection event in our server!
             var socket  = io.connect();
             // we'll write all the socket stuff after the above line!
@@ -22,16 +23,23 @@
                 event.preventDefault();
                 var form_data = { 'name': $('#name').val() }
                 socket.emit( "add_new_user", form_data);
+                $('.posting_form').fadeOut(800);
             });
             socket.on( 'update_room', function (data){
-                document.getElementById('chat_room').innerHTML = data;
+                $(data).appendTo('#chat_room').hide().fadeIn(1000);
             });
-        })
+            socket.on( 'left_room', function (data){
+                var x = "#"+data;
+                $(x).fadeOut(1500, function(){ 
+                    $(this).remove();
+                });
+            });
+        });
     </script>
 </head>
 <body>
     <div class='container'>
-        <div id='chat_room'>
+        <div id='chat_room' class='border border-dark w-75 p-3 fader'>
             <form class="posting_form" method='post'>    
                 <div class="form-group mx-auto" style="width: 700px;">
                     <p>The page at http://localhost says:</p> 
