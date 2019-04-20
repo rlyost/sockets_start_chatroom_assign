@@ -6,7 +6,11 @@ var path = require( "path");
 var app = express();
 // Define the static folder.
 app.use(express.static(path.join(__dirname, "./static")));
-app.use(session({secret: 'rangersleadtheway'}));  // string for encryption
+app.use(session({
+    secret: "rangersleadtheway",
+    resave: true,
+    saveUninitialized: true    
+}));  // string for encryption
 // Setup ejs templating and define the views folder.
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'ejs');
